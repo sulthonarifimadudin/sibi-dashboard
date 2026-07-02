@@ -3,8 +3,8 @@ SIBI Dashboard — Logo
 ~~~~~~~~~~~~~~~~~~~~~~
 
 ASCII art header and branding panel.
-Renders the AI logo on the left and the server subtitle
-on the right inside a highlighted Rich Panel.
+Renders the brain logo on the left and the large block-text
+*LLM SERVER FOR SIBI* subtitle on the right.
 
 :copyright: (c) 2026 Sulthon
 :license: MIT
@@ -17,7 +17,7 @@ from rich.columns import Columns
 from rich.panel import Panel
 from rich.text import Text
 
-from config import ASCII_LOGO, DASHBOARD_TITLE, LOGO_SUBTITLE_LINES
+from config import ASCII_LOGO, DASHBOARD_TITLE, LOGO_SUBTITLE
 from theme import ACCENT_CYAN, ACCENT_PURPLE, BORDER_HIGHLIGHT, TEXT_PRIMARY
 
 
@@ -27,22 +27,13 @@ from theme import ACCENT_CYAN, ACCENT_PURPLE, BORDER_HIGHLIGHT, TEXT_PRIMARY
 
 
 def _render_logo() -> Text:
-    """Build a Rich :class:`Text` from the ASCII logo constant."""
+    """Build a Rich :class:`Text` from the brain ASCII logo."""
     return Text(ASCII_LOGO, style=f"bold {ACCENT_CYAN}", no_wrap=True)
 
 
 def _render_subtitle() -> Text:
-    """Build the right-side subtitle block (vertically centred)."""
-    block = Text(justify="center")
-    for idx, line in enumerate(LOGO_SUBTITLE_LINES):
-        if idx == 0:
-            style = f"bold {ACCENT_PURPLE}"
-        else:
-            style = f"bold {TEXT_PRIMARY}"
-        block.append(line, style=style)
-        if idx < len(LOGO_SUBTITLE_LINES) - 1:
-            block.append("\n")
-    return block
+    """Build the right-side big block-text subtitle."""
+    return Text(LOGO_SUBTITLE, style=f"bold {ACCENT_PURPLE}", no_wrap=True)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -51,21 +42,17 @@ def _render_subtitle() -> Text:
 
 
 def build_header_panel() -> Panel:
-    """Construct the full header panel with logo + subtitle.
+    """Construct the full header panel with brain logo + big subtitle.
 
-    The logo sits on the left and the *LLM / SERVER / FOR SIBI*
-    tagline sits on the right, both centred within a highlighted
-    border panel.
+    The brain logo sits on the left and the large ASCII block-text
+    *LLM SERVER FOR SIBI* sits on the right.
     """
     logo = _render_logo()
-    subtitle = Align.center(
-        _render_subtitle(),
-        vertical="middle",
-    )
+    subtitle = _render_subtitle()
 
     content = Columns(
         [
-            Align.center(logo),
+            Align.center(logo, vertical="middle"),
             Align.center(subtitle, vertical="middle"),
         ],
         equal=True,
