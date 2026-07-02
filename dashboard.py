@@ -67,7 +67,7 @@ from theme import ACCENT_CYAN, SIBI_THEME
 
 def _build_wide_layout() -> Layout:
     """Build a two-column layout for terminals ≥ 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 35 else 3
+    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
     layout = Layout(name="root")
 
     layout.split_column(
@@ -110,7 +110,7 @@ def _build_wide_layout() -> Layout:
 
 def _build_narrow_layout() -> Layout:
     """Build a single-column stacked layout for terminals < 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 35 else 3
+    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
     layout = Layout(name="root")
 
     layout.split_column(

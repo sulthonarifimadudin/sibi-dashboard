@@ -106,12 +106,12 @@ def safe_command(
 
 def get_terminal_width() -> int:
     """Return the current terminal width in columns."""
-    return shutil.get_terminal_size((120, 40)).columns
+    return shutil.get_terminal_size((80, 24)).columns
 
 
 def get_terminal_height() -> int:
     """Return the current terminal height in rows."""
-    return shutil.get_terminal_size((120, 40)).lines
+    return shutil.get_terminal_size((80, 24)).lines
 
 
 # ═══════════════════════════════════════════════════════════════════

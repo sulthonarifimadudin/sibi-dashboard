@@ -13,7 +13,7 @@ Renders the brain logo on the left and the large block-text
 from __future__ import annotations
 
 from rich.align import Align
-from rich.columns import Columns
+from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 
@@ -45,11 +45,11 @@ def _render_subtitle() -> Text:
 def build_header_panel() -> Panel:
     """Construct the full header panel with brain logo + big subtitle.
 
-    If the terminal is too short (< 35 rows), falls back to a compact
+    If the terminal is too short (< 28 rows), falls back to a compact
     1-line header to prevent UI squishing.
     """
     height = get_terminal_height()
-    if height < 35:
+    if height < 28:
         # Minimalist compact header for short terminals
         content = Align.center(
             Text(f"⟨ {DASHBOARD_TITLE} ⟩  •  LLM SERVER FOR SIBI", style=f"bold {ACCENT_CYAN}"),
@@ -65,17 +65,16 @@ def build_header_panel() -> Panel:
     logo = _render_logo()
     subtitle = _render_subtitle()
 
-    content = Columns(
-        [
-            Align.center(logo, vertical="middle"),
-            Align.center(subtitle, vertical="middle"),
-        ],
-        equal=True,
-        expand=True,
+    grid = Table.grid(expand=True)
+    grid.add_column(ratio=1)
+    grid.add_column(ratio=1)
+    grid.add_row(
+        Align.center(logo, vertical="middle"),
+        Align.center(subtitle, vertical="middle"),
     )
 
     return Panel(
-        Align.center(content),
+        Align.center(grid),
         title=f"[bold {ACCENT_CYAN}]⟨ {DASHBOARD_TITLE} ⟩[/]",
         subtitle=f"[{ACCENT_PURPLE}]Enterprise AI Server Monitor[/]",
         border_style=BORDER_HIGHLIGHT,
