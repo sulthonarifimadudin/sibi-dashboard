@@ -19,6 +19,7 @@ from rich.text import Text
 
 from config import ASCII_LOGO, DASHBOARD_TITLE, LOGO_SUBTITLE
 from theme import ACCENT_CYAN, ACCENT_PURPLE, BORDER_HIGHLIGHT, TEXT_PRIMARY
+from modules.helpers import get_terminal_height
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -44,9 +45,23 @@ def _render_subtitle() -> Text:
 def build_header_panel() -> Panel:
     """Construct the full header panel with brain logo + big subtitle.
 
-    The brain logo sits on the left and the large ASCII block-text
-    *LLM SERVER FOR SIBI* sits on the right.
+    If the terminal is too short (< 35 rows), falls back to a compact
+    1-line header to prevent UI squishing.
     """
+    height = get_terminal_height()
+    if height < 35:
+        # Minimalist compact header for short terminals
+        content = Align.center(
+            Text(f"⟨ {DASHBOARD_TITLE} ⟩  •  LLM SERVER FOR SIBI", style=f"bold {ACCENT_CYAN}"),
+            vertical="middle",
+        )
+        return Panel(
+            content,
+            border_style=BORDER_HIGHLIGHT,
+            padding=(0, 1),
+            expand=True,
+        )
+
     logo = _render_logo()
     subtitle = _render_subtitle()
 

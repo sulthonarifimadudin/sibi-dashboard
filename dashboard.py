@@ -56,7 +56,7 @@ from modules import (
     build_services_panel,
     build_system_panel,
 )
-from modules.helpers import get_terminal_width
+from modules.helpers import get_terminal_width, get_terminal_height
 from theme import ACCENT_CYAN, SIBI_THEME
 
 
@@ -67,10 +67,11 @@ from theme import ACCENT_CYAN, SIBI_THEME
 
 def _build_wide_layout() -> Layout:
     """Build a two-column layout for terminals ≥ 120 cols."""
+    header_size = HEADER_HEIGHT if get_terminal_height() >= 35 else 3
     layout = Layout(name="root")
 
     layout.split_column(
-        Layout(name="header", size=HEADER_HEIGHT),
+        Layout(name="header", size=header_size),
         Layout(name="body", ratio=1),
         Layout(name="footer", size=FOOTER_HEIGHT),
     )
@@ -109,10 +110,11 @@ def _build_wide_layout() -> Layout:
 
 def _build_narrow_layout() -> Layout:
     """Build a single-column stacked layout for terminals < 120 cols."""
+    header_size = HEADER_HEIGHT if get_terminal_height() >= 35 else 3
     layout = Layout(name="root")
 
     layout.split_column(
-        Layout(name="header", size=HEADER_HEIGHT),
+        Layout(name="header", size=header_size),
         Layout(name="system", ratio=1),
         Layout(name="resources", ratio=1),
         Layout(name="services", ratio=1),
@@ -184,15 +186,14 @@ def watch(console: Console, interval: float) -> NoReturn:
 
     :param interval: seconds between refreshes.
     """
-    layout = _build_layout()
-
     with Live(
-        layout,
         console=console,
         refresh_per_second=1,
         screen=True,
     ) as live:
         while True:
+            # Rebuild layout on every tick to support dynamic resizing
+            layout = _build_layout()
             _populate_layout(layout)
             live.update(layout)
             time.sleep(interval)
