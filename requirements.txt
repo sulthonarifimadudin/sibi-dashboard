@@ -1,0 +1,7 @@
+# SIBI Dashboard — Python Dependencies
+# Install:  pip install -r requirements.txt
+
+rich>=13.7.0
+psutil>=5.9.0
+docker>=7.0.0
+requests>=2.31.0
