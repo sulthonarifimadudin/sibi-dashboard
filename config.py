@@ -26,18 +26,18 @@ USER_NAME: Final[str] = "SIBI"
 
 REFRESH_INTERVAL: Final[float] = 2.0  # seconds
 
-# -- ASCII Logo (Robot) --------------------------------------------
+# -- ASCII Logo (Gemini Star) --------------------------------------------
 
 ASCII_LOGO: Final[str] = (
-    "     .---.     \n"
-    "    |o   o|    \n"
-    "    | ___ |    \n"
-    "    |[___]|    \n"
-    " ___|     |___ \n"
-    "|   |===  |   |\n"
-    "|   |     |   |\n"
-    "|___|     |___|\n"
-    "    |_|_|_|    "
+    "        ✧        \n"
+    "      ✧ ✦ ✧      \n"
+    "    ✧   ✦   ✧    \n"
+    "  ✧     ✦     ✧  \n"
+    "✧ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✧\n"
+    "  ✧     ✦     ✧  \n"
+    "    ✧   ✦   ✧    \n"
+    "      ✧ ✦ ✧      \n"
+    "        ✧        "
 )
 
 # -- ASCII Subtitle (big block text) -------------------------------

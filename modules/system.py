@@ -135,10 +135,9 @@ def build_system_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=14,
-        ratio=1,
+        no_wrap=True,
     )
-    table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
+    table.add_column("Value", style=TEXT_PRIMARY)
 
     for label, value in _info_rows():
         table.add_row(f"  {label}", value)

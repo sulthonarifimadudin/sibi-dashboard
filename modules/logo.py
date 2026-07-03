@@ -33,8 +33,9 @@ def build_header_panel() -> Panel:
     *LLM SERVER FOR SIBI* sits on the right. Table.grid is used
     to ensure they stay side-by-side without wrapping.
     """
-    logo = Text(ASCII_LOGO, style=f"bold {ACCENT_CYAN}", no_wrap=True)
-    subtitle = Text(LOGO_SUBTITLE, style=f"bold {ACCENT_PURPLE}", no_wrap=True)
+    # Gemini-inspired colors
+    logo = Text(ASCII_LOGO, style="bold #8ab4f8", no_wrap=True)
+    subtitle = Text(LOGO_SUBTITLE, style="bold #c58af9", no_wrap=True)
 
     grid = Table.grid(expand=True)
     grid.add_column(ratio=1)

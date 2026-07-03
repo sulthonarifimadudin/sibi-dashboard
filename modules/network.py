@@ -168,10 +168,9 @@ def build_network_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=14,
-        ratio=1,
+        no_wrap=True,
     )
-    table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
+    table.add_column("Value", style=TEXT_PRIMARY)
 
     for label, value, style_override in _network_rows():
         styled = (

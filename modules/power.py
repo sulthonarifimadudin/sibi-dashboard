@@ -87,10 +87,9 @@ def build_power_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=10,
-        ratio=1,
+        no_wrap=True,
     )
-    table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
+    table.add_column("Value", style=TEXT_PRIMARY)
 
     table.add_row("  \u26a1 Current", f"{current_w:.0f} W")
     table.add_row("  \U0001f4c8 Today", f"{today_kwh:.2f} kWh")
