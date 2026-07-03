@@ -232,7 +232,7 @@ def build_docker_panel() -> Panel:
 
     return Panel(
         Group(*parts),
-        title=f"[bold {ACCENT_CYAN}]\ud83d\udc33  Docker[/]",
+        title=f"[bold {ACCENT_CYAN}]\U0001f433  Docker[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,
