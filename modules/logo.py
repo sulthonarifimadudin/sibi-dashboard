@@ -45,23 +45,10 @@ def _render_subtitle() -> Text:
 def build_header_panel() -> Panel:
     """Construct the full header panel with brain logo + big subtitle.
 
-    If the terminal is too short (< 28 rows), falls back to a compact
-    1-line header to prevent UI squishing.
+    The brain logo sits on the left and the large ASCII block-text
+    *LLM SERVER FOR SIBI* sits on the right. Table.grid is used
+    to ensure they stay strictly side-by-side without wrapping.
     """
-    height = get_terminal_height()
-    if height < 28:
-        # Minimalist compact header for short terminals
-        content = Align.center(
-            Text(f"⟨ {DASHBOARD_TITLE} ⟩  •  LLM SERVER FOR SIBI", style=f"bold {ACCENT_CYAN}"),
-            vertical="middle",
-        )
-        return Panel(
-            content,
-            border_style=BORDER_HIGHLIGHT,
-            padding=(0, 1),
-            expand=True,
-        )
-
     logo = _render_logo()
     subtitle = _render_subtitle()
 
@@ -78,6 +65,6 @@ def build_header_panel() -> Panel:
         title=f"[bold {ACCENT_CYAN}]⟨ {DASHBOARD_TITLE} ⟩[/]",
         subtitle=f"[{ACCENT_PURPLE}]Enterprise AI Server Monitor[/]",
         border_style=BORDER_HIGHLIGHT,
-        padding=(1, 2),
+        padding=(0, 2),
         expand=True,
     )

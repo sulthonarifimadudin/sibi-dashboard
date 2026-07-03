@@ -138,8 +138,8 @@ ENABLED_PANELS: Final[dict[str, bool]] = {
     "network": True,
     "services": True,
     "docker": True,
-    "gpu": True,
-    "ollama": True,
+    "gpu": False,
+    "ollama": False,
     "footer": True,
 }
 

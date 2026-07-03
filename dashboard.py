@@ -66,12 +66,11 @@ from theme import ACCENT_CYAN, SIBI_THEME
 
 
 def _build_wide_layout() -> Layout:
-    """Build a two-column layout for terminals ≥ 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
+    """Build a two-column layout for terminals ≥ 80 cols."""
     layout = Layout(name="root")
 
     layout.split_column(
-        Layout(name="header", size=header_size),
+        Layout(name="header", size=HEADER_HEIGHT),
         Layout(name="body", ratio=1),
         Layout(name="footer", size=FOOTER_HEIGHT),
     )
@@ -84,44 +83,35 @@ def _build_wide_layout() -> Layout:
 
     # Left: system info + resource bars
     layout["left_col"].split_column(
-        Layout(name="system", ratio=1),
-        Layout(name="resources", ratio=1),
+        Layout(name="system", ratio=1, visible=ENABLED_PANELS.get("system", True)),
+        Layout(name="resources", ratio=1, visible=ENABLED_PANELS.get("resources", True)),
     )
 
-    # Right: top row (services + network), docker, bottom row (gpu + ollama)
+    # Right: services, network, docker, gpu, ollama stacked cleanly
     layout["right_col"].split_column(
-        Layout(name="svc_net_row", ratio=1),
-        Layout(name="docker", ratio=1),
-        Layout(name="gpu_ollama_row", ratio=1),
-    )
-
-    layout["svc_net_row"].split_row(
-        Layout(name="services", ratio=1),
-        Layout(name="network", ratio=1),
-    )
-
-    layout["gpu_ollama_row"].split_row(
-        Layout(name="gpu", ratio=1),
-        Layout(name="ollama", ratio=1),
+        Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
+        Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
+        Layout(name="docker", ratio=1, visible=ENABLED_PANELS.get("docker", True)),
+        Layout(name="gpu", ratio=1, visible=ENABLED_PANELS.get("gpu", False)),
+        Layout(name="ollama", ratio=1, visible=ENABLED_PANELS.get("ollama", False)),
     )
 
     return layout
 
 
 def _build_narrow_layout() -> Layout:
-    """Build a single-column stacked layout for terminals < 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
+    """Build a single-column stacked layout for terminals < 80 cols."""
     layout = Layout(name="root")
 
     layout.split_column(
-        Layout(name="header", size=header_size),
-        Layout(name="system", ratio=1),
-        Layout(name="resources", ratio=1),
-        Layout(name="services", ratio=1),
-        Layout(name="network", ratio=1),
-        Layout(name="docker", ratio=1),
-        Layout(name="gpu", ratio=1),
-        Layout(name="ollama", ratio=1),
+        Layout(name="header", size=HEADER_HEIGHT),
+        Layout(name="system", ratio=1, visible=ENABLED_PANELS.get("system", True)),
+        Layout(name="resources", ratio=1, visible=ENABLED_PANELS.get("resources", True)),
+        Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
+        Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
+        Layout(name="docker", ratio=1, visible=ENABLED_PANELS.get("docker", True)),
+        Layout(name="gpu", ratio=1, visible=ENABLED_PANELS.get("gpu", False)),
+        Layout(name="ollama", ratio=1, visible=ENABLED_PANELS.get("ollama", False)),
         Layout(name="footer", size=FOOTER_HEIGHT),
     )
 
