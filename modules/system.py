@@ -107,15 +107,15 @@ def get_uptime() -> str:
 def _info_rows() -> list[tuple[str, str]]:
     """Collect all system info key-value pairs."""
     return [
-        ("Hostname", get_hostname()),
-        ("OS", get_os_info()),
-        ("Kernel", get_kernel()),
-        ("Arch", get_architecture()),
-        ("CPU", get_cpu_model()),
-        ("Cores", str(get_cpu_cores())),
-        ("RAM", get_memory_info()),
-        ("Storage", get_disk_info()),
-        ("Uptime", get_uptime()),
+        ("\U0001f5a5  Hostname", get_hostname()),
+        ("\U0001f4bf  OS", get_os_info()),
+        ("\U0001f527  Kernel", get_kernel()),
+        ("\U0001f4d0  Arch", get_architecture()),
+        ("\u26a1  CPU", get_cpu_model()),
+        ("\U0001f9ee  Cores", str(get_cpu_cores())),
+        ("\U0001f9e0  RAM", get_memory_info()),
+        ("\U0001f4be  Storage", get_disk_info()),
+        ("\u23f1  Uptime", get_uptime()),
     ]
 
 
@@ -135,7 +135,7 @@ def build_system_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=10,
+        min_width=14,
         ratio=1,
     )
     table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
@@ -145,7 +145,7 @@ def build_system_panel() -> Panel:
 
     return Panel(
         table,
-        title=f"[bold {ACCENT_CYAN}]System Info[/]",
+        title=f"[bold {ACCENT_CYAN}]\u2699  System Info[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

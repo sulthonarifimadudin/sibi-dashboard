@@ -144,15 +144,15 @@ def _network_rows() -> list[tuple[str, str, Optional[str]]]:
     """Collect network info rows."""
     online, status_label = check_internet()
     status_color = ACCENT_GREEN if online else ACCENT_RED
-    indicator = "[+]" if online else "[x]"
+    indicator = "\u2714" if online else "\u2716"  # check / cross marks
 
     return [
-        ("LAN IP", get_lan_ip(), None),
-        ("Tailnet", get_tailnet_ip(), None),
-        ("Public IP", get_public_ip(), None),
-        ("Gateway", get_gateway(), None),
-        ("DNS", get_dns_servers(), None),
-        ("Internet", f"{indicator} {status_label}", status_color),
+        ("\U0001f3e0  LAN IP", get_lan_ip(), None),
+        ("\U0001f517  Tailnet", get_tailnet_ip(), None),
+        ("\U0001f310  Public IP", get_public_ip(), None),
+        ("\U0001f6aa  Gateway", get_gateway(), None),
+        ("\U0001f50d  DNS", get_dns_servers(), None),
+        ("\U0001f4e1  Internet", f"{indicator} {status_label}", status_color),
     ]
 
 
@@ -168,7 +168,7 @@ def build_network_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=10,
+        min_width=14,
         ratio=1,
     )
     table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
@@ -181,7 +181,7 @@ def build_network_panel() -> Panel:
 
     return Panel(
         table,
-        title=f"[bold {ACCENT_CYAN}]Network[/]",
+        title=f"[bold {ACCENT_CYAN}]\U0001f310  Network[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

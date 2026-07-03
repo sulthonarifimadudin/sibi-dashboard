@@ -92,13 +92,13 @@ def build_power_panel() -> Panel:
     )
     table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
 
-    table.add_row("  Current", f"{current_w:.0f} W")
-    table.add_row("  Today", f"{today_kwh:.2f} kWh")
-    table.add_row("  Estimated", _format_rupiah(cost))
+    table.add_row("  \u26a1 Current", f"{current_w:.0f} W")
+    table.add_row("  \ud83d\udcc8 Today", f"{today_kwh:.2f} kWh")
+    table.add_row("  \ud83d\udcb5 Estimated", _format_rupiah(cost))
 
     return Panel(
         table,
-        title=f"[bold {ACCENT_CYAN}]Power[/]",
+        title=f"[bold {ACCENT_CYAN}]\u26a1  Power[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

@@ -3,8 +3,8 @@ SIBI Dashboard -- Logo
 ~~~~~~~~~~~~~~~~~~~~~~
 
 ASCII art header and branding panel.
-Renders the NeoFetch-style brain logo with inline
-SIBI / LLM Server branding.
+Renders the robot logo on the left and the large block-text
+*LLM SERVER FOR SIBI* subtitle on the right.
 
 :copyright: (c) 2026 Sulthon
 :license: MIT
@@ -13,10 +13,11 @@ SIBI / LLM Server branding.
 from __future__ import annotations
 
 from rich.align import Align
+from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 
-from config import ASCII_LOGO, DASHBOARD_TITLE
+from config import ASCII_LOGO, DASHBOARD_TITLE, LOGO_SUBTITLE
 from theme import ACCENT_CYAN, ACCENT_PURPLE, BORDER_HIGHLIGHT
 
 
@@ -26,15 +27,25 @@ from theme import ACCENT_CYAN, ACCENT_PURPLE, BORDER_HIGHLIGHT
 
 
 def build_header_panel() -> Panel:
-    """Construct the header panel with the brain ASCII logo.
+    """Construct the full header panel with robot logo + big subtitle.
 
-    The brain art includes inline text for SIBI and LLM Server,
-    centered in a highlighted panel.
+    The robot art sits on the left and the large ASCII block-text
+    *LLM SERVER FOR SIBI* sits on the right. Table.grid is used
+    to ensure they stay side-by-side without wrapping.
     """
     logo = Text(ASCII_LOGO, style=f"bold {ACCENT_CYAN}", no_wrap=True)
+    subtitle = Text(LOGO_SUBTITLE, style=f"bold {ACCENT_PURPLE}", no_wrap=True)
+
+    grid = Table.grid(expand=True)
+    grid.add_column(ratio=1)
+    grid.add_column(ratio=2)
+    grid.add_row(
+        Align.center(logo, vertical="middle"),
+        Align.center(subtitle, vertical="middle"),
+    )
 
     return Panel(
-        Align.center(logo, vertical="middle"),
+        Align.center(grid),
         title=f"[bold {ACCENT_CYAN}]( {DASHBOARD_TITLE} )[/]",
         subtitle=f"[{ACCENT_PURPLE}]Enterprise AI Server Monitor[/]",
         border_style=BORDER_HIGHLIGHT,
