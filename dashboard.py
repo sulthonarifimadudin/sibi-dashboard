@@ -32,8 +32,8 @@ _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from rich.console import Console
-from rich.layout import Layout
+from rich.console import Console, Group, RenderableType
+from rich.table import Table
 from rich.live import Live
 
 from config import (
@@ -65,108 +65,80 @@ from theme import ACCENT_CYAN, SIBI_THEME
 # ═══════════════════════════════════════════════════════════════════
 
 
-def _build_wide_layout() -> Layout:
+def _build_wide_layout() -> RenderableType:
     """Build a two-column layout for terminals ≥ 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
-    layout = Layout(name="root")
+    grid = Table.grid(expand=True)
+    grid.add_column(ratio=1)
+    grid.add_column(ratio=1)
 
-    layout.split_column(
-        Layout(name="header", size=header_size),
-        Layout(name="body", ratio=1),
-        Layout(name="footer", size=FOOTER_HEIGHT),
+    left_panels = []
+    if ENABLED_PANELS.get("system", True): left_panels.append(build_system_panel())
+    if ENABLED_PANELS.get("resources", True): left_panels.append(build_resource_panel())
+    left = Group(*left_panels)
+
+    svc_net_row = Table.grid(expand=True)
+    svc_net_row.add_column(ratio=1)
+    svc_net_row.add_column(ratio=1)
+    svc_net_row.add_row(
+        build_services_panel() if ENABLED_PANELS.get("services", True) else "",
+        build_network_panel() if ENABLED_PANELS.get("network", True) else ""
     )
 
-    # Body → left / right columns
-    layout["body"].split_row(
-        Layout(name="left_col", ratio=1),
-        Layout(name="right_col", ratio=1),
+    gpu_ollama_row = Table.grid(expand=True)
+    gpu_ollama_row.add_column(ratio=1)
+    gpu_ollama_row.add_column(ratio=1)
+    gpu_ollama_row.add_row(
+        build_gpu_panel() if ENABLED_PANELS.get("gpu", True) else "",
+        build_ollama_panel() if ENABLED_PANELS.get("ollama", True) else ""
     )
 
-    # Left: system info + resource bars
-    layout["left_col"].split_column(
-        Layout(name="system", ratio=1),
-        Layout(name="resources", ratio=1),
-    )
+    right_panels = []
+    right_panels.append(svc_net_row)
+    if ENABLED_PANELS.get("docker", True): right_panels.append(build_docker_panel())
+    right_panels.append(gpu_ollama_row)
+    right = Group(*right_panels)
 
-    # Right: top row (services + network), docker, bottom row (gpu + ollama)
-    layout["right_col"].split_column(
-        Layout(name="svc_net_row", ratio=1),
-        Layout(name="docker", ratio=1),
-        Layout(name="gpu_ollama_row", ratio=1),
-    )
+    grid.add_row(left, right)
 
-    layout["svc_net_row"].split_row(
-        Layout(name="services", ratio=1),
-        Layout(name="network", ratio=1),
-    )
+    parts = []
+    if ENABLED_PANELS.get("header", True):
+        parts.append(build_header_panel())
+    parts.append(grid)
+    if ENABLED_PANELS.get("footer", True):
+        parts.append(build_footer())
 
-    layout["gpu_ollama_row"].split_row(
-        Layout(name="gpu", ratio=1),
-        Layout(name="ollama", ratio=1),
-    )
-
-    return layout
+    return Group(*parts)
 
 
-def _build_narrow_layout() -> Layout:
+def _build_narrow_layout() -> RenderableType:
     """Build a single-column stacked layout for terminals < 120 cols."""
-    header_size = HEADER_HEIGHT if get_terminal_height() >= 28 else 3
-    layout = Layout(name="root")
+    parts = []
+    
+    panel_map = [
+        ("header", build_header_panel),
+        ("system", build_system_panel),
+        ("resources", build_resource_panel),
+        ("services", build_services_panel),
+        ("network", build_network_panel),
+        ("docker", build_docker_panel),
+        ("gpu", build_gpu_panel),
+        ("ollama", build_ollama_panel),
+        ("footer", build_footer),
+    ]
 
-    layout.split_column(
-        Layout(name="header", size=header_size),
-        Layout(name="system", ratio=1),
-        Layout(name="resources", ratio=1),
-        Layout(name="services", ratio=1),
-        Layout(name="network", ratio=1),
-        Layout(name="docker", ratio=1),
-        Layout(name="gpu", ratio=1),
-        Layout(name="ollama", ratio=1),
-        Layout(name="footer", size=FOOTER_HEIGHT),
-    )
-
-    return layout
+    for name, builder in panel_map:
+        if ENABLED_PANELS.get(name, True):
+            parts.append(builder())
+            
+    return Group(*parts)
 
 
-def _build_layout() -> Layout:
+def _build_layout() -> RenderableType:
     """Select the appropriate layout based on terminal width."""
     width = get_terminal_width()
     if width >= WIDE_LAYOUT_MIN_COLS:
         return _build_wide_layout()
     return _build_narrow_layout()
-
-
-# ═══════════════════════════════════════════════════════════════════
-#  Layout Population
-# ═══════════════════════════════════════════════════════════════════
-
-
-def _populate_layout(layout: Layout) -> Layout:
-    """Fill every layout slot with live panel content.
-
-    Respects ``ENABLED_PANELS`` in :mod:`config` — disabled
-    panels are silently skipped.
-    """
-    _panel_map: dict[str, object] = {
-        "header": build_header_panel,
-        "system": build_system_panel,
-        "resources": build_resource_panel,
-        "services": build_services_panel,
-        "network": build_network_panel,
-        "docker": build_docker_panel,
-        "gpu": build_gpu_panel,
-        "ollama": build_ollama_panel,
-        "footer": build_footer,
-    }
-
-    for name, builder in _panel_map.items():
-        if ENABLED_PANELS.get(name, True):
-            try:
-                layout[name].update(builder())  # type: ignore[operator]
-            except KeyError:
-                pass  # slot doesn't exist in this layout variant
-
-    return layout
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -177,7 +149,6 @@ def _populate_layout(layout: Layout) -> Layout:
 def render_once(console: Console) -> None:
     """Render the dashboard once and print to *console*."""
     layout = _build_layout()
-    _populate_layout(layout)
     console.print(layout)
 
 
@@ -194,7 +165,6 @@ def watch(console: Console, interval: float) -> NoReturn:
         while True:
             # Rebuild layout on every tick to support dynamic resizing
             layout = _build_layout()
-            _populate_layout(layout)
             live.update(layout)
             time.sleep(interval)
 
