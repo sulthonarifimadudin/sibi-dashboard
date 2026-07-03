@@ -13,9 +13,11 @@ so it can be reused without side effects.
 from __future__ import annotations
 
 import os
-import shutil
 import subprocess
 from datetime import datetime, timedelta
+from rich.console import Console
+
+_console = Console()
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -106,12 +108,12 @@ def safe_command(
 
 def get_terminal_width() -> int:
     """Return the current terminal width in columns."""
-    return shutil.get_terminal_size((80, 24)).columns
+    return _console.size.width
 
 
 def get_terminal_height() -> int:
     """Return the current terminal height in rows."""
-    return shutil.get_terminal_size((80, 24)).lines
+    return _console.size.height
 
 
 # ═══════════════════════════════════════════════════════════════════
