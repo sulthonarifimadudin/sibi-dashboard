@@ -145,6 +145,6 @@ ENABLED_PANELS: Final[dict[str, bool]] = {
 
 # ── Layout ───────────────────────────────────────────────────────
 
-WIDE_LAYOUT_MIN_COLS: Final[int] = 120
+WIDE_LAYOUT_MIN_COLS: Final[int] = 80
 HEADER_HEIGHT: Final[int] = 13
 FOOTER_HEIGHT: Final[int] = 3
