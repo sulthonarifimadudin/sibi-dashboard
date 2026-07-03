@@ -99,6 +99,6 @@ def build_power_panel() -> Panel:
         table,
         title=f"[bold {ACCENT_CYAN}]\u26a1  Power[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )

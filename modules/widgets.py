@@ -177,8 +177,6 @@ def build_resource_panel() -> Panel:
 
     parts.append(_colored_bar("CPU", _get_cpu_percent()))
     parts.append(_colored_bar("Memory", _get_memory_percent()))
-    parts.append(_colored_bar("Disk", _get_disk_percent()))
-    parts.append(_colored_bar("Swap", _get_swap_percent()))
 
     # Temperature
     temp = _get_temperature()
@@ -188,6 +186,9 @@ def build_resource_panel() -> Panel:
         )
     else:
         parts.append(_colored_bar("Temp", 0, suffix="N/A"))
+
+    parts.append(_colored_bar("Disk", _get_disk_percent()))
+    parts.append(_colored_bar("Swap", _get_swap_percent()))
 
     # Load Average
     load = _get_load_average()
@@ -216,7 +217,7 @@ def build_resource_panel() -> Panel:
         Group(*parts),
         title=f"[bold {ACCENT_CYAN}]📊  Resources[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )
 
@@ -331,7 +332,7 @@ def build_gpu_panel() -> Panel:
             ),
             title=f"[bold {ACCENT_CYAN}]🎮  GPU[/]",
             border_style=BORDER_NORMAL,
-            padding=(1, 1),
+            padding=(0, 1),
             expand=True,
         )
 
@@ -360,7 +361,7 @@ def build_gpu_panel() -> Panel:
         Group(*parts),
         title=f"[bold {ACCENT_CYAN}]🎮  GPU[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )
 
@@ -450,7 +451,7 @@ def build_ollama_panel() -> Panel:
             ),
             title=f"[bold {ACCENT_CYAN}]🦙  Ollama[/]",
             border_style=BORDER_NORMAL,
-            padding=(1, 1),
+            padding=(0, 1),
             expand=True,
         )
 
@@ -468,7 +469,7 @@ def build_ollama_panel() -> Panel:
         Group(table, summary),
         title=f"[bold {ACCENT_CYAN}]🦙  Ollama[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )
 

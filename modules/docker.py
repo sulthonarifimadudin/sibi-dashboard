@@ -210,7 +210,7 @@ def build_docker_panel() -> Panel:
             ),
             title=f"[bold {ACCENT_CYAN}]🐳  Docker[/]",
             border_style=BORDER_NORMAL,
-            padding=(1, 1),
+            padding=(0, 1),
             expand=True,
         )
 
@@ -234,6 +234,6 @@ def build_docker_panel() -> Panel:
         Group(*parts),
         title=f"[bold {ACCENT_CYAN}]\U0001f433  Docker[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )

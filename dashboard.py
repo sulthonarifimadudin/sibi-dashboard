@@ -88,9 +88,9 @@ def _build_wide_layout() -> Layout:
 
     # Right: services, network, docker stacked cleanly
     layout["right_col"].split_column(
-        Layout(name="services", ratio=2, visible=ENABLED_PANELS.get("services", True)),
+        Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
         Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
-        Layout(name="docker", ratio=2, visible=ENABLED_PANELS.get("docker", True)),
+        Layout(name="docker", ratio=1, visible=ENABLED_PANELS.get("docker", True)),
         Layout(name="gpu", ratio=1, visible=ENABLED_PANELS.get("gpu", False)),
         Layout(name="ollama", ratio=1, visible=ENABLED_PANELS.get("ollama", False)),
     )

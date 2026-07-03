@@ -146,6 +146,6 @@ def build_system_panel() -> Panel:
         table,
         title=f"[bold {ACCENT_CYAN}]\u2699  System Info[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )

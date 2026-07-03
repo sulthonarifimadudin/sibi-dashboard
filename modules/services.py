@@ -149,6 +149,6 @@ def build_services_panel() -> Panel:
         table,
         title=f"[bold {ACCENT_CYAN}]🔌  Services[/]",
         border_style=BORDER_NORMAL,
-        padding=(1, 1),
+        padding=(0, 1),
         expand=True,
     )
