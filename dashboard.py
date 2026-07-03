@@ -81,16 +81,16 @@ def _build_wide_layout() -> Layout:
 
     # Left: system info + resource bars
     layout["left_col"].split_column(
-        Layout(name="system", ratio=2, visible=ENABLED_PANELS.get("system", True)),
-        Layout(name="resources", ratio=2, visible=ENABLED_PANELS.get("resources", True)),
-        Layout(name="power", ratio=1, visible=ENABLED_PANELS.get("power", True)),
+        Layout(name="system", ratio=9, visible=ENABLED_PANELS.get("system", True)),
+        Layout(name="resources", ratio=5, visible=ENABLED_PANELS.get("resources", True)),
+        Layout(name="power", ratio=4, visible=ENABLED_PANELS.get("power", True)),
     )
 
     # Right: services, network, docker stacked cleanly
     layout["right_col"].split_column(
-        Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
+        Layout(name="services", ratio=2, visible=ENABLED_PANELS.get("services", True)),
         Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
-        Layout(name="docker", ratio=1, visible=ENABLED_PANELS.get("docker", True)),
+        Layout(name="docker", ratio=2, visible=ENABLED_PANELS.get("docker", True)),
         Layout(name="gpu", ratio=1, visible=ENABLED_PANELS.get("gpu", False)),
         Layout(name="ollama", ratio=1, visible=ENABLED_PANELS.get("ollama", False)),
     )

@@ -38,8 +38,8 @@ def build_header_panel() -> Panel:
     subtitle = Text(LOGO_SUBTITLE, style="bold #c58af9", no_wrap=True)
 
     grid = Table.grid(expand=True)
-    grid.add_column(ratio=1)
-    grid.add_column(ratio=2)
+    grid.add_column()
+    grid.add_column()
     grid.add_row(
         Align.center(logo, vertical="middle"),
         Align.center(subtitle, vertical="middle"),
