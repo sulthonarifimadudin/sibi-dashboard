@@ -1,5 +1,5 @@
 """
-SIBI Dashboard — Configuration
+SIBI Dashboard -- Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Central configuration for the SIBI Dashboard.
@@ -15,121 +15,112 @@ from __future__ import annotations
 from typing import Final
 
 
-# ── Meta ─────────────────────────────────────────────────────────
+# -- Meta ---------------------------------------------------------
 
 DASHBOARD_TITLE: Final[str] = "SIBI Dashboard"
 DASHBOARD_VERSION: Final[str] = "1.0.0"
 DASHBOARD_AUTHOR: Final[str] = "Sulthon"
 USER_NAME: Final[str] = "SIBI"
 
-# ── Refresh ──────────────────────────────────────────────────────
+# -- Refresh ------------------------------------------------------
 
 REFRESH_INTERVAL: Final[float] = 2.0  # seconds
 
-# ── ASCII Logo (Slant) ───────────────────────────────────────────
+# -- ASCII Logo (NeoFetch-style brain) -----------------------------
 
 ASCII_LOGO: Final[str] = (
-    "   _____ ________  ____\n"
-    "  / ___//  _/ __ )/  _/\n"
-    "  \__ \ / // __  |/ /  \n"
-    " ___/ // // /_/ // /   \n"
-    "/____/___/_____/___/   "
+    "         .,;;;;;;,.\n"
+    "      .;;;;;;;;;;;;;;\n"
+    "    .;;;' .,,.  `;;;;\n"
+    "   ;;;;  /:  :\\  ;;;;\n"
+    "   ;;;;  \\:  :/  ;;;;    SIBI\n"
+    "   `;;;.  `--'  .;;;'    LLM Server\n"
+    "    `;;;;,    ,;;;;'\n"
+    "      `;;;;;;;;;;'\n"
+    "         `''''`"
 )
 
-# ── ASCII Subtitle (small text) ──────────────────────────────────
-
-LOGO_SUBTITLE: Final[str] = (
-    " _    _    __  __   ___ ___ _____   _____ ___ \n"
-    "| |  | |  |  \/  | / __| __| _ \ \ / / __| _ \\\n"
-    "| |__| |__| |\/| | \__ \ _||   /\ V /| _||   /\n"
-    "|____|____|_|  |_| |___/___|_|_\ \_/ |___|_|_\\\n"
-    "                                              \n"
-    " ___ ___  ___   ___ ___ ___ ___ \n"
-    "| __/ _ \| _ \ / __|_ _| _ )_ _|\n"
-    "| _| (_) |   / \__ \| || _ \| | \n"
-    "|_| \___/|_|_\ |___/___|___/___|"
-)
-
-# ── Services ─────────────────────────────────────────────────────
-# Each service maps to a detection strategy:
-#   port     — TCP port to probe on localhost
-#   process  — process name to search in the process table
-#   icon     — Unicode icon for the services panel
+# -- Services ------------------------------------------------------
 
 SERVICES: Final[dict[str, dict[str, object]]] = {
     "Docker": {
         "port": None,
         "process": "dockerd",
-        "icon": "🐳",
+        "icon": ">>",
     },
     "Portainer": {
         "port": 9443,
         "process": None,
-        "icon": "📦",
+        "icon": ">>",
     },
     "Ollama": {
         "port": 11434,
         "process": "ollama",
-        "icon": "🦙",
+        "icon": ">>",
     },
     "Open WebUI": {
         "port": 3000,
         "process": None,
-        "icon": "🌐",
+        "icon": ">>",
     },
     "PostgreSQL": {
         "port": 5432,
         "process": "postgres",
-        "icon": "🐘",
+        "icon": ">>",
     },
     "Redis": {
         "port": 6379,
         "process": "redis-server",
-        "icon": "🔴",
+        "icon": ">>",
     },
     "Nginx Proxy": {
         "port": 81,
         "process": None,
-        "icon": "🔀",
+        "icon": ">>",
     },
     "ComfyUI": {
         "port": 8188,
         "process": None,
-        "icon": "🎨",
+        "icon": ">>",
     },
     "MLflow": {
         "port": 5000,
         "process": None,
-        "icon": "📊",
+        "icon": ">>",
     },
     "Jupyter": {
         "port": 8888,
         "process": None,
-        "icon": "📓",
+        "icon": ">>",
     },
     "SSH": {
         "port": 22,
         "process": "sshd",
-        "icon": "🔑",
+        "icon": ">>",
     },
     "Tailscale": {
         "port": None,
         "process": "tailscaled",
-        "icon": "🔗",
+        "icon": ">>",
     },
 }
 
-# ── Ollama API ───────────────────────────────────────────────────
+# -- Ollama API ----------------------------------------------------
 
 OLLAMA_API_URL: Final[str] = "http://localhost:11434"
 
-# ── Public IP ────────────────────────────────────────────────────
+# -- Public IP -----------------------------------------------------
 
 PUBLIC_IP_URL: Final[str] = "https://api.ipify.org"
 PUBLIC_IP_TIMEOUT: Final[float] = 3.0
 
-# ── Panel Feature Flags ─────────────────────────────────────────
-# Set any panel to False to hide it from the dashboard.
+# -- Power Estimation ---------------------------------------------
+# Electricity rate in IDR per kWh (PLN tariff R-1/1300 VA)
+
+POWER_RATE_PER_KWH: Final[float] = 1444.70  # Rp/kWh
+IDLE_POWER_WATTS: Final[float] = 80.0        # estimated idle draw
+
+# -- Panel Feature Flags ------------------------------------------
 
 ENABLED_PANELS: Final[dict[str, bool]] = {
     "header": True,
@@ -138,13 +129,15 @@ ENABLED_PANELS: Final[dict[str, bool]] = {
     "network": True,
     "services": True,
     "docker": True,
+    "power": True,
     "gpu": False,
     "ollama": False,
     "footer": True,
 }
 
-# ── Layout ───────────────────────────────────────────────────────
+# -- Layout --------------------------------------------------------
 
 WIDE_LAYOUT_MIN_COLS: Final[int] = 80
-HEADER_HEIGHT: Final[int] = 13
+HEADER_HEIGHT: Final[int] = 11
 FOOTER_HEIGHT: Final[int] = 3
+

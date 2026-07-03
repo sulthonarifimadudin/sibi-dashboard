@@ -1,5 +1,5 @@
 """
-SIBI Dashboard — Network
+SIBI Dashboard -- Network
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Network information: LAN/Tailnet/public IPs, gateway, DNS,
@@ -31,17 +31,13 @@ from rich.panel import Panel
 from rich.table import Table
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Data Collectors
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def get_lan_ip() -> str:
-    """Return the primary LAN IP address.
-
-    Uses a UDP socket to determine the default route's source IP.
-    Falls back to iterating network interfaces.
-    """
+    """Return the primary LAN IP address."""
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(1)
@@ -54,7 +50,7 @@ def get_lan_ip() -> str:
 
 
 def _fallback_lan_ip() -> str:
-    """Iterate ``psutil`` interfaces to find a non-loopback IPv4."""
+    """Iterate psutil interfaces to find a non-loopback IPv4."""
     for _name, addrs in psutil.net_if_addrs().items():
         for addr in addrs:
             if (
@@ -67,14 +63,12 @@ def _fallback_lan_ip() -> str:
 
 def get_tailnet_ip() -> str:
     """Return the Tailscale (tailnet) IP if available."""
-    # Check network interfaces first (fast path)
     for name, addrs in psutil.net_if_addrs().items():
         if "tailscale" in name.lower() or name.startswith("ts"):
             for addr in addrs:
                 if addr.family == socket.AF_INET:
                     return addr.address
 
-    # Fall back to `tailscale ip` command
     return safe_command(
         ["tailscale", "ip", "-4"],
         timeout=3.0,
@@ -106,7 +100,6 @@ def get_gateway() -> str:
     if gw and gw != "N/A":
         return gw
 
-    # macOS / BSD fallback
     return safe_command(
         [
             "sh", "-c",
@@ -133,10 +126,7 @@ def get_dns_servers() -> str:
 
 
 def check_internet() -> tuple[bool, str]:
-    """Check internet connectivity.
-
-    Returns a ``(is_online, label)`` tuple.
-    """
+    """Check internet connectivity."""
     try:
         socket.setdefaulttimeout(3)
         socket.create_connection(("8.8.8.8", 53))
@@ -145,25 +135,24 @@ def check_internet() -> tuple[bool, str]:
         return False, "Offline"
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Panel Builder
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def _network_rows() -> list[tuple[str, str, Optional[str]]]:
-    """Collect network info rows as ``(label, value, style_override)``."""
+    """Collect network info rows."""
     online, status_label = check_internet()
     status_color = ACCENT_GREEN if online else ACCENT_RED
-    indicator = "●" if online else "○"
+    indicator = "[+]" if online else "[x]"
 
     return [
-        ("🔌  LAN IP", get_lan_ip(), None),
-        ("🔗  Tailnet IP", get_tailnet_ip(), None),
-        ("🌍  Public IP", get_public_ip(), None),
-        ("🖥  Hostname", socket.gethostname(), None),
-        ("🚪  Gateway", get_gateway(), None),
-        ("📡  DNS", get_dns_servers(), None),
-        ("📶  Internet", f"{indicator} {status_label}", status_color),
+        ("LAN IP", get_lan_ip(), None),
+        ("Tailnet", get_tailnet_ip(), None),
+        ("Public IP", get_public_ip(), None),
+        ("Gateway", get_gateway(), None),
+        ("DNS", get_dns_servers(), None),
+        ("Internet", f"{indicator} {status_label}", status_color),
     ]
 
 
@@ -179,7 +168,7 @@ def build_network_panel() -> Panel:
     table.add_column(
         "Label",
         style=f"bold {ACCENT_PURPLE}",
-        min_width=14,
+        min_width=10,
         ratio=1,
     )
     table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
@@ -192,7 +181,7 @@ def build_network_panel() -> Panel:
 
     return Panel(
         table,
-        title=f"[bold {ACCENT_CYAN}]🌐  Network[/]",
+        title=f"[bold {ACCENT_CYAN}]Network[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

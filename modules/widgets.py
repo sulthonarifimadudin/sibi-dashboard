@@ -184,7 +184,7 @@ def build_resource_panel() -> Panel:
     temp = _get_temperature()
     if temp is not None:
         parts.append(
-            _colored_bar("Temp", clamp(temp, 0, 110), 110.0, f"{temp:.0f}°C")
+            _colored_bar("Temp", clamp(temp, 0, 110), 110.0, f"{temp:.0f}C")
         )
     else:
         parts.append(_colored_bar("Temp", 0, suffix="N/A"))
@@ -200,21 +200,21 @@ def build_resource_panel() -> Panel:
 
     # Network I/O
     net_up, net_down = _get_network_io()
-    parts.append(_colored_bar("Net ↑", 0, suffix=net_up))
-    parts.append(_colored_bar("Net ↓", 0, suffix=net_down))
+    parts.append(_colored_bar("Net Up", 0, suffix=net_up))
+    parts.append(_colored_bar("Net Down", 0, suffix=net_down))
 
     # Battery (optional)
     battery = _get_battery()
     if battery is not None:
         pct, charging = battery
-        icon = "⚡" if charging else "🔋"
+        icon = "[+]" if charging else "[-]"
         parts.append(
-            _colored_bar("Battery", pct, suffix=f"{icon} {pct:.0f}%")
+            _colored_bar("Battery", pct, suffix=f"{pct:.0f}%")
         )
 
     return Panel(
         Group(*parts),
-        title=f"[bold {ACCENT_CYAN}]📊  Resources[/]",
+        title=f"[bold {ACCENT_CYAN}]Resources[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,
@@ -302,12 +302,12 @@ def _gpu_info_table(gpu: dict[str, str]) -> Table:
     table.add_column("Value", style=TEXT_PRIMARY, ratio=2)
 
     rows = [
-        ("🔧  Driver", gpu["driver"]),
-        ("🧊  CUDA", gpu["cuda"]),
-        ("🎮  GPU Name", gpu["name"]),
-        ("🌡  Temp", f"{gpu['temp']}°C"),
-        ("💾  VRAM", f"{gpu['vram_used']} / {gpu['vram_total']} MiB"),
-        ("📈  GPU Load", f"{gpu['gpu_util']}%"),
+        ("  Driver", gpu["driver"]),
+        ("  CUDA", gpu["cuda"]),
+        ("  GPU Name", gpu["name"]),
+        ("  Temp", f"{gpu['temp']}C"),
+        ("  VRAM", f"{gpu['vram_used']} / {gpu['vram_total']} MiB"),
+        ("  GPU Load", f"{gpu['gpu_util']}%"),
     ]
     for label, value in rows:
         table.add_row(f"  {label}", value)
@@ -329,7 +329,7 @@ def build_gpu_panel() -> Panel:
                 "  No NVIDIA GPU detected.",
                 style=f"italic {TEXT_MUTED}",
             ),
-            title=f"[bold {ACCENT_CYAN}]🎮  GPU[/]",
+            title=f"[bold {ACCENT_CYAN}]GPU[/]",
             border_style=BORDER_NORMAL,
             padding=(1, 1),
             expand=True,
@@ -358,7 +358,7 @@ def build_gpu_panel() -> Panel:
 
     return Panel(
         Group(*parts),
-        title=f"[bold {ACCENT_CYAN}]🎮  GPU[/]",
+        title=f"[bold {ACCENT_CYAN}]GPU[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,
@@ -425,9 +425,9 @@ def _models_table(
         )
         is_loaded = name in running_names
         status = (
-            Text("● Loaded", style=f"bold {ACCENT_GREEN}")
+            Text("[+] Loaded", style=f"bold {ACCENT_GREEN}")
             if is_loaded
-            else Text("○ Idle", style=TEXT_MUTED)
+            else Text("[-] Idle", style=TEXT_MUTED)
         )
         table.add_row(f"  {name}", size_str, status)
 
@@ -448,7 +448,7 @@ def build_ollama_panel() -> Panel:
                 "  Ollama is not available.",
                 style=f"italic {TEXT_MUTED}",
             ),
-            title=f"[bold {ACCENT_CYAN}]🦙  Ollama[/]",
+            title=f"[bold {ACCENT_CYAN}]Ollama[/]",
             border_style=BORDER_NORMAL,
             padding=(1, 1),
             expand=True,
@@ -459,14 +459,14 @@ def build_ollama_panel() -> Panel:
 
     table = _models_table(models, running_names)
     summary = Text(
-        f"\n  📦 {len(models)} model(s) installed  •  "
-        f"🔥 {len(running)} running",
+        f"\n  {len(models)} model(s) installed  |  "
+        f"{len(running)} running",
         style=f"bold {TEXT_SECONDARY}",
     )
 
     return Panel(
         Group(table, summary),
-        title=f"[bold {ACCENT_CYAN}]🦙  Ollama[/]",
+        title=f"[bold {ACCENT_CYAN}]Ollama[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,
@@ -484,13 +484,13 @@ def build_footer() -> Panel:
     tz_name = time.strftime("%Z") or "UTC"
 
     segments: list[str] = [
-        f"[bold {ACCENT_CYAN}]👤 Welcome back, {USER_NAME}[/]",
-        f"[{TEXT_SECONDARY}]📅 {now.strftime('%A, %d %B %Y')}[/]",
-        f"[{TEXT_SECONDARY}]🕐 {now.strftime('%H:%M:%S')} {tz_name}[/]",
+        f"[bold {ACCENT_CYAN}]Welcome back, {USER_NAME}[/]",
+        f"[{TEXT_SECONDARY}]{now.strftime('%A, %d %B %Y')}[/]",
+        f"[{TEXT_SECONDARY}]{now.strftime('%H:%M:%S')} {tz_name}[/]",
         f"[{TEXT_MUTED}]v{DASHBOARD_VERSION}[/]",
     ]
 
-    footer_text = Text.from_markup("  •  ".join(segments))
+    footer_text = Text.from_markup("  |  ".join(segments))
 
     return Panel(
         Align.center(footer_text),

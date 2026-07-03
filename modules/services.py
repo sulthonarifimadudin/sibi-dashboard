@@ -99,7 +99,7 @@ def detect_all_services() -> list[tuple[str, str, Optional[bool]]]:
     results: list[tuple[str, str, Optional[bool]]] = []
     for name, cfg in SERVICES.items():
         status = detect_service(cfg)
-        icon = str(cfg.get("icon", "●"))
+        icon = str(cfg.get("icon", ">>"))
         results.append((name, icon, status))
     return results
 
@@ -112,10 +112,10 @@ def detect_all_services() -> list[tuple[str, str, Optional[bool]]]:
 def _status_indicator(running: Optional[bool]) -> Text:
     """Return a styled ``✔ Running`` / ``✖ Stopped`` / ``? Unknown`` text."""
     if running is True:
-        return Text("✔ Running", style=f"bold {STATUS_RUNNING}")
+        return Text("[+] Running", style=f"bold {STATUS_RUNNING}")
     if running is False:
-        return Text("✖ Stopped", style=f"bold {STATUS_STOPPED}")
-    return Text("? Unknown", style=f"italic {STATUS_UNKNOWN}")
+        return Text("[x] Stopped", style=f"bold {STATUS_STOPPED}")
+    return Text("[?] Unknown", style=f"italic {STATUS_UNKNOWN}")
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -147,7 +147,7 @@ def build_services_panel() -> Panel:
 
     return Panel(
         table,
-        title=f"[bold {ACCENT_CYAN}]🔌  Services[/]",
+        title=f"[bold {ACCENT_CYAN}]Services[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

@@ -115,20 +115,21 @@ def _format_ports(ports: dict[str, Any]) -> str:
     """Format Docker port mappings into a concise string.
 
     Example output: ``8080→80/tcp, 443→443/tcp``
+    Example output: ``8080:80/tcp, 443:443/tcp``
     """
     parts: list[str] = []
     for container_port, host_bindings in ports.items():
         if host_bindings:
             for binding in host_bindings:
                 host_port = binding.get("HostPort", "?")
-                parts.append(f"{host_port}→{container_port}")
+                parts.append(f"{host_port}:{container_port}")
         else:
             parts.append(str(container_port))
     if not parts:
-        return "—"
+        return "-"
     display = ", ".join(parts[:3])
     if len(parts) > 3:
-        display += "…"
+        display += "..."
     return display
 
 
@@ -152,11 +153,11 @@ def _summary_table(summary: dict[str, int]) -> Table:
     table.add_column("Value", style=TEXT_PRIMARY, ratio=1)
 
     rows: list[tuple[str, str, str]] = [
-        ("🟢 Running", str(summary.get("running", 0)), ACCENT_GREEN),
-        ("🔴 Stopped", str(summary.get("stopped", 0)), ACCENT_RED),
-        ("📦 Images", str(summary.get("images", 0)), TEXT_PRIMARY),
-        ("💾 Volumes", str(summary.get("volumes", 0)), TEXT_PRIMARY),
-        ("🌐 Networks", str(summary.get("networks", 0)), TEXT_PRIMARY),
+        ("[+] Running", str(summary.get("running", 0)), ACCENT_GREEN),
+        ("[-] Stopped", str(summary.get("stopped", 0)), ACCENT_RED),
+        ("    Images", str(summary.get("images", 0)), TEXT_PRIMARY),
+        ("    Volumes", str(summary.get("volumes", 0)), TEXT_PRIMARY),
+        ("    Networks", str(summary.get("networks", 0)), TEXT_PRIMARY),
     ]
 
     for label, value, color in rows:
@@ -207,7 +208,7 @@ def build_docker_panel() -> Panel:
                 "  Docker is not available or not running.",
                 style=f"italic {TEXT_MUTED}",
             ),
-            title=f"[bold {ACCENT_CYAN}]🐳  Docker[/]",
+            title=f"[bold {ACCENT_CYAN}]Docker[/]",
             border_style=BORDER_NORMAL,
             padding=(1, 1),
             expand=True,
@@ -231,7 +232,7 @@ def build_docker_panel() -> Panel:
 
     return Panel(
         Group(*parts),
-        title=f"[bold {ACCENT_CYAN}]🐳  Docker[/]",
+        title=f"[bold {ACCENT_CYAN}]Docker[/]",
         border_style=BORDER_NORMAL,
         padding=(1, 1),
         expand=True,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SIBI Dashboard — Main Entry Point
+SIBI Dashboard -- Main Entry Point
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enterprise AI server monitoring dashboard built with Rich.
@@ -23,10 +23,7 @@ import sys
 import time
 from typing import NoReturn
 
-# ── Ensure project root is on sys.path ───────────────────────────
-# When the user runs `python dashboard.py` from *outside* the
-# project directory we still need `config`, `theme`, and `modules`
-# to be importable.
+# -- Ensure project root is on sys.path ---------------------------
 
 _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if _PROJECT_ROOT not in sys.path:
@@ -52,21 +49,22 @@ from modules import (
     build_header_panel,
     build_network_panel,
     build_ollama_panel,
+    build_power_panel,
     build_resource_panel,
     build_services_panel,
     build_system_panel,
 )
-from modules.helpers import get_terminal_width, get_terminal_height
+from modules.helpers import get_terminal_width
 from theme import ACCENT_CYAN, SIBI_THEME
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Layout Construction
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def _build_wide_layout() -> Layout:
-    """Build a two-column layout for terminals ≥ 80 cols."""
+    """Build a two-column layout for terminals >= 80 cols."""
     layout = Layout(name="root")
 
     layout.split_column(
@@ -75,7 +73,7 @@ def _build_wide_layout() -> Layout:
         Layout(name="footer", size=FOOTER_HEIGHT),
     )
 
-    # Body → left / right columns
+    # Body -> left / right columns
     layout["body"].split_row(
         Layout(name="left_col", ratio=1),
         Layout(name="right_col", ratio=1),
@@ -83,11 +81,12 @@ def _build_wide_layout() -> Layout:
 
     # Left: system info + resource bars
     layout["left_col"].split_column(
-        Layout(name="system", ratio=1, visible=ENABLED_PANELS.get("system", True)),
-        Layout(name="resources", ratio=1, visible=ENABLED_PANELS.get("resources", True)),
+        Layout(name="system", ratio=2, visible=ENABLED_PANELS.get("system", True)),
+        Layout(name="resources", ratio=2, visible=ENABLED_PANELS.get("resources", True)),
+        Layout(name="power", ratio=1, visible=ENABLED_PANELS.get("power", True)),
     )
 
-    # Right: services, network, docker, gpu, ollama stacked cleanly
+    # Right: services, network, docker stacked cleanly
     layout["right_col"].split_column(
         Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
         Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
@@ -107,6 +106,7 @@ def _build_narrow_layout() -> Layout:
         Layout(name="header", size=HEADER_HEIGHT),
         Layout(name="system", ratio=1, visible=ENABLED_PANELS.get("system", True)),
         Layout(name="resources", ratio=1, visible=ENABLED_PANELS.get("resources", True)),
+        Layout(name="power", ratio=1, visible=ENABLED_PANELS.get("power", True)),
         Layout(name="services", ratio=1, visible=ENABLED_PANELS.get("services", True)),
         Layout(name="network", ratio=1, visible=ENABLED_PANELS.get("network", True)),
         Layout(name="docker", ratio=1, visible=ENABLED_PANELS.get("docker", True)),
@@ -126,21 +126,22 @@ def _build_layout() -> Layout:
     return _build_narrow_layout()
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Layout Population
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def _populate_layout(layout: Layout) -> Layout:
     """Fill every layout slot with live panel content.
 
-    Respects ``ENABLED_PANELS`` in :mod:`config` — disabled
+    Respects ``ENABLED_PANELS`` in :mod:`config` -- disabled
     panels are silently skipped.
     """
     _panel_map: dict[str, object] = {
         "header": build_header_panel,
         "system": build_system_panel,
         "resources": build_resource_panel,
+        "power": build_power_panel,
         "services": build_services_panel,
         "network": build_network_panel,
         "docker": build_docker_panel,
@@ -159,22 +160,26 @@ def _populate_layout(layout: Layout) -> Layout:
     return layout
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Render Modes
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def render_once(console: Console) -> None:
     """Render the dashboard once and print to *console*."""
     layout = _build_layout()
     _populate_layout(layout)
-    
-    # Prevent the layout from squishing if the terminal reports a small height (like 24 during SSH login).
-    # By forcing a minimum render height of 40, the layout proportions are maintained perfectly
-    # and the terminal simply scrolls down to show the full dashboard.
+
+    # Force a minimum render height of 40 to prevent squishing
+    # when SSH reports a small PTY size (e.g. 24 rows).
     render_height = max(console.size.height, 40)
-    render_console = Console(width=console.size.width, height=render_height, theme=SIBI_THEME, force_terminal=True)
-    
+    render_console = Console(
+        width=console.size.width,
+        height=render_height,
+        theme=SIBI_THEME,
+        force_terminal=True,
+    )
+
     render_console.print(layout)
 
 
@@ -189,16 +194,15 @@ def watch(console: Console, interval: float) -> NoReturn:
         screen=True,
     ) as live:
         while True:
-            # Rebuild layout on every tick to support dynamic resizing
             layout = _build_layout()
             _populate_layout(layout)
             live.update(layout)
             time.sleep(interval)
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  CLI
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def _parse_args() -> argparse.Namespace:
@@ -207,7 +211,7 @@ def _parse_args() -> argparse.Namespace:
         prog="sibi-dashboard",
         description=(
             f"{DASHBOARD_TITLE} v{DASHBOARD_VERSION} "
-            "— Enterprise AI Server Dashboard"
+            "-- Enterprise AI Server Dashboard"
         ),
     )
     parser.add_argument(
@@ -230,9 +234,9 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 #  Entry Point
-# ═══════════════════════════════════════════════════════════════════
+# -------------------------------------------------------------------
 
 
 def main() -> None:
@@ -248,7 +252,7 @@ def main() -> None:
     except KeyboardInterrupt:
         console.print(
             f"\n[bold {ACCENT_CYAN}]"
-            "👋 Dashboard stopped. Goodbye!"
+            "Dashboard stopped. Goodbye!"
             "[/]\n"
         )
         sys.exit(0)

@@ -122,10 +122,10 @@ def get_terminal_height() -> int:
 
 
 def truncate(text: str, max_length: int = 40) -> str:
-    """Truncate *text* to *max_length* characters, adding ``…`` if needed."""
+    """Truncate *text* to *max_length* characters, adding ``...`` if needed."""
     if len(text) <= max_length:
         return text
-    return text[: max_length - 1] + "…"
+    return text[: max_length - 3] + "..."
 
 
 # ═══════════════════════════════════════════════════════════════════
