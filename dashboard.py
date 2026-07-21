@@ -39,6 +39,7 @@ from config import (
     ENABLED_PANELS,
     FOOTER_HEIGHT,
     HEADER_HEIGHT,
+    MAX_DASHBOARD_WIDTH,
     REFRESH_INTERVAL,
     WIDE_LAYOUT_MIN_COLS,
 )
@@ -173,8 +174,10 @@ def render_once(console: Console) -> None:
     # Force a minimum render height of 40 to prevent squishing
     # when SSH reports a small PTY size (e.g. 24 rows).
     render_height = max(console.size.height, 40)
+    render_width = min(console.size.width, MAX_DASHBOARD_WIDTH)
+
     render_console = Console(
-        width=console.size.width,
+        width=render_width,
         height=render_height,
         theme=SIBI_THEME,
         force_terminal=True,
@@ -242,7 +245,13 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     """Application entry point."""
     args = _parse_args()
-    console = Console(theme=SIBI_THEME, force_terminal=True)
+    base_console = Console(theme=SIBI_THEME, force_terminal=True)
+    render_width = min(base_console.size.width, MAX_DASHBOARD_WIDTH)
+    console = Console(
+        width=render_width,
+        theme=SIBI_THEME,
+        force_terminal=True,
+    )
 
     try:
         if args.watch:

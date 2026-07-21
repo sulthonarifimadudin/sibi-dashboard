@@ -144,5 +144,6 @@ ENABLED_PANELS: Final[dict[str, bool]] = {
 # -- Layout --------------------------------------------------------
 
 WIDE_LAYOUT_MIN_COLS: Final[int] = 80
+MAX_DASHBOARD_WIDTH: Final[int] = 100
 HEADER_HEIGHT: Final[int] = 11
 FOOTER_HEIGHT: Final[int] = 3
